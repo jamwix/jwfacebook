@@ -1,0 +1,11 @@
+{
+	"name": "jwfacebook",
+	"url": "http://www.jamwix.com",
+	"license": "MIT",
+	"tags": [],
+	"description": "",
+	"version": "0.0.1",
+	"releasenote": "first version",
+	"contributors": [],
+	"dependencies": {}
+}
