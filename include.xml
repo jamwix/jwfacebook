@@ -3,4 +3,8 @@
 	
 	<ndll name="jwfacebook" if="ios" />
 	
+    <dependency name="facebook" path="facebook-android-sdk/facebook" if="android" />
+	<dependency name="jwfacebook" path="dependencies/android" if="android" />
+	<android extension="org.haxe.extension.JWFacebook" />
+
 </project>

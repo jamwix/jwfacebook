@@ -4,12 +4,22 @@ import openfl.Lib;
 import openfl.events.EventDispatcher;
 import openfl.events.Event;
 
+#if android
+import openfl.utils.JNI;
+#end
+
 class JWFacebook 
 {
 	private static var initialized = false;
 	private static var dispatcher = new EventDispatcher ();
 
-	public static function init():Void
+#if android
+	private static var funcInit:Dynamic;
+	private static var funcConnect:Dynamic;
+	private static var funcPostPhoto:Dynamic;
+#end
+
+	public static function init(?appId:String = null):Void
 	{
 		#if ios
 		
@@ -19,16 +29,30 @@ class JWFacebook
 		}
 
 		fb_initialize();
-		initialized = true;
+		#else
+		
+		if (funcInit == null) {
+			funcInit = JNI.createStaticMethod ("com/jamwix/JWFacebook", "initialize", "(Ljava/lang/String;Lorg/haxe/lime/HaxeObject;)V");
+		}
+
+		funcInit(appId, new FBHandler());
 
 		#end
+		initialized = true;
 	}
 
-	public static function connect(appID:String, allowUI:Bool):Void
+	public static function connect(appID:String = null, allowUI:Bool = true):Void
 	{
 		#if ios
 		fb_connect(appID, allowUI);
 		#end
+#if android
+		if (funcConnect == null) {
+			funcConnect = JNI.createStaticMethod ("com/jamwix/JWFacebook", "connect", "()V");
+		}
+
+		funcConnect();
+#end
 	}
 	
 	public static function requstPublishActions():Void
@@ -43,6 +67,14 @@ class JWFacebook
 		#if ios
 		fb_post_photo(path, msg);
 		#end
+
+#if android
+		if (funcPostPhoto == null) {
+			funcPostPhoto = JNI.createStaticMethod ("com/jamwix/JWFacebook", "postPhoto", "(Ljava/lang/String;Ljava/lang/String;)V");
+		}
+
+		funcPostPhoto(path, msg);
+#end
 	}
 
 	private static function notifyListeners(inEvent:Dynamic):Void
@@ -116,4 +148,30 @@ class JWFacebook
 
 	#end
 }
+
+#if android
+
+private class FBHandler 
+{
+	public function new ()
+	{
+	}
+
+	public function onOpened(state:String, data:String):Void
+	{
+		if (state == "OPENED")
+			JWFacebook.dispatchEvent(new JWFacebookEvent(JWFacebookEvent.OPENED, data));
+		else
+			JWFacebook.dispatchEvent(new JWFacebookEvent(JWFacebookEvent.ERROR, data));
+	}
+
+	public function onGraph(state:String, path:String, data:String):Void
+	{
+		if (state == "GRAPH_SUCCESS")
+			JWFacebook.dispatchEvent(new JWFacebookEvent(JWFacebookEvent.GRAPH_SUCCESS, data));
+		else
+			JWFacebook.dispatchEvent(new JWFacebookEvent(JWFacebookEvent.GRAPH_ERROR, data));
+	}
+}
+#end
 	
