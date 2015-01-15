@@ -29,7 +29,7 @@ class JWFacebook
 		}
 
 		fb_initialize();
-		#else
+		#elseif android 
 		
 		if (funcInit == null) {
 			funcInit = JNI.createStaticMethod ("com/jamwix/JWFacebook", "initialize", "(Ljava/lang/String;Lorg/haxe/lime/HaxeObject;)V");
