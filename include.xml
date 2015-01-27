@@ -5,6 +5,6 @@
 	
     <dependency name="facebook" path="facebook-android-sdk/facebook" if="android" />
 	<dependency name="jwfacebook" path="dependencies/android" if="android" />
-	<android extension="org.haxe.extension.JWFacebook" />
+	<android extension="com.jamwix.JWFacebook" />
 
 </project>

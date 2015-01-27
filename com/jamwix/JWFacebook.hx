@@ -29,7 +29,7 @@ class JWFacebook
 		}
 
 		fb_initialize();
-		#else
+		#elseif android
 		
 		if (funcInit == null) {
 			funcInit = JNI.createStaticMethod ("com/jamwix/JWFacebook", "initialize", "(Ljava/lang/String;Lorg/haxe/lime/HaxeObject;)V");
@@ -52,6 +52,13 @@ class JWFacebook
 		}
 
 		funcConnect();
+#end
+	}
+
+	public static function logout():Void
+	{
+#if ios
+		fb_logout();
 #end
 	}
 	
@@ -139,6 +146,7 @@ class JWFacebook
 	#if ios
 	private static var fb_initialize = Lib.load("jwfacebook", "jwfacebook_initialize", 0);
 	private static var fb_connect = Lib.load("jwfacebook", "jwfacebook_connect", 2);
+	private static var fb_logout = Lib.load("jwfacebook", "jwfacebook_logout", 0);
 	private static var fb_disconnect = Lib.load("jwfacebook", "jwfacebook_disconnect", 0);
 	private static var set_event_handle = Lib.load ("jwfacebook", "jwfacebook_set_event_handle", 1);
 	private static var fb_request_publish_actions = 

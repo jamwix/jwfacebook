@@ -60,6 +60,15 @@ static value jwfacebook_request_publish_actions()
 }
 DEFINE_PRIM (jwfacebook_request_publish_actions, 0);
 
+static value jwfacebook_logout() 
+{
+	#ifdef IPHONE
+    jwfb_logout();
+	#endif
+	return alloc_null();
+}
+DEFINE_PRIM (jwfacebook_logout, 0);
+
 static value jwfacebook_post_photo(value path, value msg) 
 {
 	#ifdef IPHONE

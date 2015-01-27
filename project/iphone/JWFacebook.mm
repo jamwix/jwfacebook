@@ -137,7 +137,7 @@ extern "C" void send_fb_event(const char* type, const char* data);
 
     NSDictionary *parameters = 
         [NSDictionary dictionaryWithObjectsAndKeys: image, @"source",
-                                                    msg, @"message",
+                                                    //msg, @"message",
                                                     nil];
 
     if ([[FBSession activeSession] isOpen]) {
@@ -233,5 +233,9 @@ extern "C"
 
     void jw_request_publish_actions() {
         [jwFacebook requstPublishActions];
+    }
+
+    void jwfb_logout() {
+        [FBSession.activeSession closeAndClearTokenInformation];
     }
 }
