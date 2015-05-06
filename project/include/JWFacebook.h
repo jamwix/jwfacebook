@@ -11,6 +11,7 @@ namespace jwfacebook
 	    void jw_post_photo( const char *image_path, const char *message );
         void jw_request_publish_actions();
         void jwfb_logout();
+        void jwfb_get_friends();
     }
 }
 

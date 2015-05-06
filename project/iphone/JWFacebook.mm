@@ -18,6 +18,7 @@ extern "C" void send_fb_event(const char* type, const char* data);
         parameters:(NSDictionary*)parameters;
 - (void) requstPublishActions;
 - (void) postPhoto:(NSString*) path withMessage:(NSString*) msg;
+- (void) getFriends;
 @end
 
 @implementation NMEAppDelegate (Facebook)
@@ -74,7 +75,7 @@ extern "C" void send_fb_event(const char* type, const char* data);
 {
     NSLog(@"connect with id: %@",NSappID);
     [FBSettings setDefaultAppID:NSappID];
-    [FBSession openActiveSessionWithReadPermissions: nil
+    [FBSession openActiveSessionWithReadPermissions: @[@"user_friends"]
         allowLoginUI:withUI
         completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
             [self sessionStateChanged:session state:state error:error];
@@ -120,10 +121,46 @@ extern "C" void send_fb_event(const char* type, const char* data);
                 send_fb_event(
                     "GRAPH_ERROR", [error.localizedDescription UTF8String]);
             } else {
-                send_fb_event("GRAPH_SUCCESS", "");
+                NSString* dataStr = @"{}";
+                NSError *error;
+                if (result != nil) {
+                    NSData* jsonData = 
+                        [NSJSONSerialization dataWithJSONObject: result
+                                                        options: 0
+                                                          error: &error];
+
+                    if (!jsonData) {
+                        NSLog(@"JSON data error: %@", error);
+                    } else {
+                        dataStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+                    }
+                }
+                send_fb_event("GRAPH_SUCCESS", [dataStr UTF8String]);
             }
         }
     ];
+}
+
+- (void) getFriends {
+    if ([[FBSession activeSession] isOpen]) {
+        if (![[FBSession activeSession].permissions containsObject:@"user_friends"]) {
+
+                [[FBSession activeSession] requestNewReadPermissions:[NSArray arrayWithObject:@"user_friends"] 
+                                                      completionHandler:^(FBSession *session,NSError *error){
+                    [self fbRequest: @"me/friends" HTTPMethod: @"GET" parameters: nil];
+                                                      }];
+        } else {
+            [self fbRequest: @"me/friends" HTTPMethod: @"GET" parameters: nil];
+        }
+    } else {
+        [FBSession openActiveSessionWithReadPermissions: @[@"user_friends"]
+            allowLoginUI: true
+            completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                [self fbRequest: @"me/friends" HTTPMethod: @"GET" parameters: nil];
+            }
+    ];
+    
+    }
 }
 
 - (void) postPhoto:(NSString*) path withMessage:(NSString*) msg
@@ -237,5 +274,9 @@ extern "C"
 
     void jwfb_logout() {
         [FBSession.activeSession closeAndClearTokenInformation];
+    }
+
+    void jwfb_get_friends() {
+        [jwFacebook getFriends];
     }
 }

@@ -55,6 +55,12 @@ class JWFacebook
 #end
 	}
 
+	public static function profilePicUrl(fbId:String, width:Int = 100, 
+										 height:Int = 100)
+	{
+		return "https://graph.facebook.com/" + fbId + "/picture";
+	}
+
 	public static function logout():Void
 	{
 #if ios
@@ -81,6 +87,13 @@ class JWFacebook
 		}
 
 		funcPostPhoto(path, msg);
+#end
+	}
+
+	public static function getFriends():Void
+	{
+#if ios
+		fb_get_friends();
 #end
 	}
 
@@ -153,6 +166,8 @@ class JWFacebook
 		Lib.load("jwfacebook", "jwfacebook_request_publish_actions", 0);
 	private static var fb_post_photo = 
 		Lib.load("jwfacebook", "jwfacebook_post_photo", 2);
+	private static var fb_get_friends = 
+		Lib.load("jwfacebook", "jwfacebook_get_friends", 0);
 
 	#end
 }
