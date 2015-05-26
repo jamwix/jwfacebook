@@ -97,6 +97,13 @@ class JWFacebook
 #end
 	}
 
+	public static function getMe():Void
+	{
+#if ios
+		fb_get_me();
+#end
+	}
+
 	private static function notifyListeners(inEvent:Dynamic):Void
 	{
 		
@@ -168,6 +175,7 @@ class JWFacebook
 		Lib.load("jwfacebook", "jwfacebook_post_photo", 2);
 	private static var fb_get_friends = 
 		Lib.load("jwfacebook", "jwfacebook_get_friends", 0);
+	private static var fb_get_me = Lib.load("jwfacebook", "jwfacebook_get_me", 0);
 
 	#end
 }

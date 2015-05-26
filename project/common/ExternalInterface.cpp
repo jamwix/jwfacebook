@@ -78,6 +78,15 @@ static value jwfacebook_get_friends()
 }
 DEFINE_PRIM (jwfacebook_get_friends, 0);
 
+static value jwfacebook_get_me()
+{
+	#ifdef IPHONE
+    jwfb_get_me();
+	#endif
+	return alloc_null();
+}
+DEFINE_PRIM (jwfacebook_get_me, 0);
+
 static value jwfacebook_post_photo(value path, value msg) 
 {
 	#ifdef IPHONE

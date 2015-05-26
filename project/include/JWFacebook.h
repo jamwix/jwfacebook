@@ -12,6 +12,7 @@ namespace jwfacebook
         void jw_request_publish_actions();
         void jwfb_logout();
         void jwfb_get_friends();
+        void jwfb_get_me();
     }
 }
 

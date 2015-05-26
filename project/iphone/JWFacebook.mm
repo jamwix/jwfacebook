@@ -163,6 +163,20 @@ extern "C" void send_fb_event(const char* type, const char* data);
     }
 }
 
+- (void) getMe {
+    if ([[FBSession activeSession] isOpen]) {
+        [self fbRequest: @"me" HTTPMethod: @"GET" parameters: nil];
+    } else {
+        [FBSession openActiveSessionWithReadPermissions: @[@"user_friends"]
+            allowLoginUI: true
+            completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                [self fbRequest: @"me" HTTPMethod: @"GET" parameters: nil];
+            }
+    ];
+    
+    }
+}
+
 - (void) postPhoto:(NSString*) path withMessage:(NSString*) msg
 {
     UIImage *image = [UIImage imageWithContentsOfFile: path];
@@ -278,5 +292,9 @@ extern "C"
 
     void jwfb_get_friends() {
         [jwFacebook getFriends];
+    }
+
+    void jwfb_get_me() {
+        [jwFacebook getMe];
     }
 }
